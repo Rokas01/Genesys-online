@@ -1,0 +1,21 @@
+{
+
+  "name": "app",
+  "version": "1.0.0",
+  "description": "Free2play genesys RPG online game-maker",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.1.3"
+  },
+  "engines": {
+    "node": "14.x"
+  }
+}
