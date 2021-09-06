@@ -199,8 +199,8 @@ Socketio.on("connection", socket => {
 
 });
 
-Http.listen(process.env.PORT || 3000, () => {
-    console.log("Upd: Listening at 3000...");
+Http.listen(process.env.PORT || 5000, () => {
+    console.log("Upd: Listening at 5000...");
 });
 
 
