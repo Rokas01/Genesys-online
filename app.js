@@ -2,16 +2,7 @@ const Express = require("express")();
 const Http = require("http").Server(Express);
 const Socketio = require("socket.io")(Http);
 
-
-var position = {
-    x: 200,
-    y: 200
-};
-
-var positions = {
-    x: 200,
-    y: 200
-};
+Express.use(express.static("./public/client"));
 
 var Player1 = {
     name: "P1",
@@ -199,8 +190,8 @@ Socketio.on("connection", socket => {
 
 });
 
-Http.listen(process.env.PORT || 3000, () => {
-    console.log("Upd: Listening at 3000...");
+Http.listen(process.env.PORT || 8080, () => {
+    console.log("Upd: Listening at 8080...");
 });
 
 
@@ -285,17 +276,3 @@ function rollAbility(numberOfTimes) {
 
 }
 
-
-function readTextFile(file) {
-    var rawFile = new XMLHttpRequest();
-    rawFile.open("GET", file, false);
-    rawFile.onreadystatechange = function () {
-        if (rawFile.readyState === 4) {
-            if (rawFile.status === 200 || rawFile.status == 0) {
-                var allText = rawFile.responseText;
-                alert(allText);
-            }
-        }
-    }
-    rawFile.send(null);
-}
