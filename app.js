@@ -1,7 +1,7 @@
 var express_init = require('express');
 const Express = express_init();
 const Http = require("http").Server(Express);
-const Socketio = require("socket.io", { rememberTransport: false, transports: ['WebSocket', 'Flash Socket', 'AJAX long-polling'] })(Http); //--- old version
+const Socketio = require("socket.io", { rememberTransport: false,})(Http); //--- old version
 //const Socketio = require("socket.io")(Express.listen(8080))
 var path = require('path');
 
