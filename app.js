@@ -1,9 +1,13 @@
 var express_init = require('express');
 const Express = express_init();
 const Http = require("http").Server(Express);
-const Socketio = require("socket.io")(Http);
+const Socketio = require("socket.io")(Http); //--- old version
+//const Socketio = require("socket.io")(Express.listen(8080))
+var path = require('path');
 
-Express.use(express_init.static("./public/"));
+const static_angular_files = path.join(__dirname, '/public')
+
+Express.use(express_init.static(static_angular_files));
 
 var Player1 = {
     name: "P1",
