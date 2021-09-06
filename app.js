@@ -3,7 +3,7 @@ const Express = express_init();
 const Http = require("http").Server(Express);
 const Socketio = require("socket.io")(Http);
 
-Express.use(express_init.static("./public/client"));
+Express.use(express_init.static("./public/"));
 
 var Player1 = {
     name: "P1",
