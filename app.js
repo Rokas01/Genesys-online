@@ -9,6 +9,10 @@ const static_angular_files = path.join(__dirname, '/public')
 
 Express.use(express_init.static(static_angular_files));
 
+express_init.get('/', function(req, res) {
+    res.sendFile('public/index.html', { root: './' });
+});
+
 var Player1 = {
     name: "P1",
     x_coord: 200,
