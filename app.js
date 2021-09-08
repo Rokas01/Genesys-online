@@ -248,7 +248,7 @@ function getDateAndTime(){
 
     var today = new Date();
 
-    var time = "[" + today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0"); + ":" + today.getSeconds() + "]"
+    var time = "[" + today.getHours() + ":" + String(today.getMinutes()).padStart(2, "0") + ":" + today.getSeconds() + "]"
 
     return time
 }
