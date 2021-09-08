@@ -247,7 +247,8 @@ function rollDifficulty(numberOfTimes) {
 function getDateAndTime(){
 
     var today = new Date();
-    var time = "[" + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "]"
+    var minutes = ('0'+current_date.getMinutes()).slice(-2);
+    var time = "[" + today.getHours() + ":" + minutes + ":" + today.getSeconds() + "]"
 
     return time
 }
