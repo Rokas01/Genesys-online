@@ -2,16 +2,14 @@ var express_init = require('express');
 const Express = express_init();
 const Http = require("http").Server(Express);
 const Socketio = require("socket.io")(Http); //--- old version
+
+
 //const Socketio = require("socket.io")(Express.listen(8080))
+
 var path = require('path');
+const portToUse = 3000
 
-const static_angular_files = path.join(__dirname, '/public')
-//
-Express.use(express_init.static(static_angular_files));
 
-Express.get('/', function(req, res) {
-    res.sendFile('public/index.html', { root: './' });
-});
 
 var Player1 = {
     name: "P1",
@@ -68,7 +66,7 @@ var Player4 = {
     presence: 4,
 };
 const Background = {name: "MainMap", link: "https://link.com"}
-const today = new Date();
+
 
 var arrayOfPlayers = new Array();
 var arrayOfLogEntries = new Array();
@@ -79,39 +77,18 @@ arrayOfPlayers[2] = Player3
 arrayOfPlayers[3] = Player4
 
 
+arrayOfLogEntries[0] = [getDateAndTime(), " Game started!"]
 
 
 Socketio.on("connection", socket => {
 
     console.log("Connected!");
 
-    var time = "[" + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "]"
-    arrayOfLogEntries[0] = [time, " Game started!"]
+    arrayOfLogEntries.push([getDateAndTime(), " Player connected: "+socket.conn.remoteAddress.toString()])
 
     socket.emit("initDrawRequest", [arrayOfPlayers, arrayOfLogEntries]);
 
-    /*
-    socket.on("move", data => {
-        switch (data) {
-            case "left":
-                position.x -= 5;
-                Socketio.emit("position", position);
-                break;
-            case "right":
-                position.x += 5;
-                Socketio.emit("position", position);
-                break;
-            case "up":
-                position.y -= 5;
-                Socketio.emit("position", position);
-                break;
-            case "down":
-                position.y += 5;
-                Socketio.emit("position", position);
-                break;
-        }
-    });
-*/
+    socket.emit("callUpdateLog", arrayOfLogEntries);
 
     socket.on("movePlayer", data => {
 
@@ -120,9 +97,23 @@ Socketio.on("connection", socket => {
         var new_y_coord = data[2];
 
         console.log("Moving player: " + playerToMove.toString() + new_x_coord.toString());
+        if (playerToMove == 4) { //4 = all players. 0=Payer 1, 1 = Player 2, etc.
 
-        arrayOfPlayers[playerToMove].x_coord = new_x_coord
-        arrayOfPlayers[playerToMove].y_coord = new_y_coord
+            for (var i = 0; i < 4; i++) {
+
+                arrayOfPlayers[i].x_coord = new_x_coord + i*30
+                arrayOfPlayers[i].y_coord = new_y_coord
+            }
+
+        }
+        else {
+                arrayOfPlayers[playerToMove].x_coord = new_x_coord
+                arrayOfPlayers[playerToMove].y_coord = new_y_coord
+
+            }
+
+
+
 
         console.log("Updated")
 
@@ -154,8 +145,10 @@ Socketio.on("connection", socket => {
         logText = "Player "+playerToUpdate+" stats updated!"
 
         console.log("Player "+(playerToUpdate+1)+" stats updated "+ brawn + " "+ arrayOfPlayers[playerToUpdate].brawn)
-        console.log(time+logText)
-        arrayOfLogEntries.push([time, logText])
+
+        console.log(getDateAndTime()+logText)
+
+        arrayOfLogEntries.push([getDateAndTime(), logText])
 
         Socketio.emit("callUpdateLog", arrayOfLogEntries);
         Socketio.emit("callRedraw", arrayOfPlayers);
@@ -169,20 +162,18 @@ Socketio.on("connection", socket => {
         var typeofDice = data[0];
         var howManyTimes = data[1];
 
-        var time = "[" + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "]"
-
         console.log("Rolling dice: " + typeofDice + " " + howManyTimes);
 
         if (typeofDice == "A") {
 
             diceResult = rollAbility(howManyTimes)
-            result = [time, " Successes: " + diceResult.successes + "; Advantages: " + diceResult.advantages];
+            result = [getDateAndTime(), " Successes: " + diceResult.successes + "; Advantages: " + diceResult.advantages];
 
 
         } else if (typeofDice == "D") {
 
             diceResult = rollDifficulty(howManyTimes)
-            result = [time, " Threats: " + diceResult.threats + "; Failures: " + diceResult.failures];
+            result = [getDateAndTime(), " Threats: " + diceResult.threats + "; Failures: " + diceResult.failures];
 
 
         }
@@ -199,8 +190,10 @@ Socketio.on("connection", socket => {
 
 });
 
-Http.listen(process.env.PORT || 8080, () => {
-    console.log("Upd: Listening at 8080...");
+Http.listen(process.env.PORT || portToUse, () => {
+
+//Http.listen(portToUse, () => {
+    console.log("[] Listening at: "+portToUse);
 });
 
 
@@ -244,7 +237,13 @@ function rollDifficulty(numberOfTimes) {
 }
 
 
+function getDateAndTime(){
 
+    var today = new Date();
+    var time = "[" + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds() + "]"
+
+    return time
+}
 
 function rollAbility(numberOfTimes) {
 
