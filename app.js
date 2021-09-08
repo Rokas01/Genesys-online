@@ -4,10 +4,17 @@ const Http = require("http").Server(Express);
 const Socketio = require("socket.io")(Http); //--- old version
 
 
-//const Socketio = require("socket.io")(Express.listen(8080))
-
 var path = require('path');
 const portToUse = 3000
+
+const static_angular_files = path.join(__dirname, '/public')
+
+Express.use(express_init.static(static_angular_files));
+
+Express.get('/', function(req, res) {
+    res.sendFile('public/index.html', { root: './' });
+});
+
 
 
 
