@@ -72,6 +72,12 @@ var Player4 = {
     willpower: 4,
     presence: 4,
 };
+
+var Player5 = {
+    name: "background",
+    link: "https://cdna.artstation.com/p/assets/images/images/004/182/516/large/emanuele-galletto-shintiara-world-map-by-araknophobia-dapn79e.jpg",
+
+};
 const Background = {name: "MainMap", link: "https://link.com"}
 
 
@@ -82,6 +88,7 @@ arrayOfPlayers[0] = Player1
 arrayOfPlayers[1] = Player2
 arrayOfPlayers[2] = Player3
 arrayOfPlayers[3] = Player4
+arrayOfPlayers[4] = Player5 //this is background
 
 
 arrayOfLogEntries[0] = [getDateAndTime(), " Game started!"]
@@ -120,8 +127,6 @@ Socketio.on("connection", socket => {
             }
 
 
-
-
         console.log("Updated")
 
         Socketio.emit("callRedraw", arrayOfPlayers);
@@ -131,6 +136,7 @@ Socketio.on("connection", socket => {
     socket.on("updatePlayerStatsOnServer", data => {
 
         var playerToUpdate = data[0]
+        var playerIdForLog = (parseInt(data[0]) + 1)
         var brawn = data[1]
         var agility = data[2]
         var intellect = data[3]
@@ -140,8 +146,6 @@ Socketio.on("connection", socket => {
 
         var logText = ""
 
-        console.log("Player "+playerToUpdate+" stats updated "+ brawn + " "+ arrayOfPlayers[playerToUpdate].brawn)
-
         arrayOfPlayers[playerToUpdate].brawn = brawn
         arrayOfPlayers[playerToUpdate].agility = agility
         arrayOfPlayers[playerToUpdate].intellect = intellect
@@ -149,9 +153,7 @@ Socketio.on("connection", socket => {
         arrayOfPlayers[playerToUpdate].willpower = willpower
         arrayOfPlayers[playerToUpdate].presence = presence
 
-        logText = "Player "+playerToUpdate+" stats updated!"
-
-        console.log("Player "+(playerToUpdate+1)+" stats updated "+ brawn + " "+ arrayOfPlayers[playerToUpdate].brawn)
+        logText = "Player "+playerIdForLog+" stats updated!"
 
         console.log(getDateAndTime()+logText)
 
@@ -191,6 +193,29 @@ Socketio.on("connection", socket => {
         Socketio.emit("callUpdateLog", arrayOfLogEntries);
 
         console.log(arrayOfLogEntries)
+
+    });
+
+
+    socket.on("updateGraphics", data => {
+
+        arrayOfPlayers[4].link = data[0] //background
+
+        arrayOfPlayers[0].link = data[1]
+        arrayOfPlayers[1].link = data[2]
+        arrayOfPlayers[2].link = data[3]
+        arrayOfPlayers[3].link = data[4]
+
+        arrayOfLogEntries.push([getDateAndTime(), "Graphics updated!"])
+
+        Socketio.emit("initDrawRequest", [arrayOfPlayers, arrayOfLogEntries]);
+
+        Socketio.emit("callUpdateLog", arrayOfLogEntries);
+
+        Socketio.emit("callRedraw", arrayOfPlayers);
+
+        console.log("Graphics update & Reset")
+
 
     });
 
