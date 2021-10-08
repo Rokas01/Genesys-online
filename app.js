@@ -46,6 +46,7 @@ var Player2 = {
     willpower: 2,
     presence: 2,
 };
+
 var Player3 = {
     name: "P3",
     x_coord: 400,
@@ -59,6 +60,7 @@ var Player3 = {
     willpower: 3,
     presence: 3,
 };
+
 var Player4 = {
     name: "P4",
     x_coord: 500,
